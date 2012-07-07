@@ -40,7 +40,7 @@ namespace ff {
 
         if (elapsed < 0)
         {
-            int index = (elapsed + 1) * -1;
+            int index = ((int)elapsed + 1) * -1;
             buffer << prefix[index] << msg;
         }
         else
