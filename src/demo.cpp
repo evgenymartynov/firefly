@@ -20,6 +20,7 @@ namespace ff {
 
     bool App::Exit()
     {
+		g_Shader.DeletePrograms();
         return true;
     }
 

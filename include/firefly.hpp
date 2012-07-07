@@ -1,5 +1,5 @@
-#ifndef FIREFLY_INCLUDE_HEADER
-#define FIREFLY_INCLUDE_HEADER
+#ifndef FIREFLY_HPP
+#define FIREFLY_HPP
 
 #include <firefly/opengl.hpp>
 #include <firefly/common.hpp>

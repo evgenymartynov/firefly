@@ -208,7 +208,6 @@ namespace ff {
         }
 
         // start sub-systems
-        // if (!g_Audio.init()) return false;
 
         g_Log.write(LOG_NOTIME, " ");
         g_Log.write(LOG_EVENT, "Loading Game...");
@@ -246,7 +245,7 @@ namespace ff {
         Exit();
 
         // shutdown each subsystem
-        //g_Audio.Shutdown();
+		m_timer.stop();
 
         glfwTerminate();
         g_Log.write(LOG_NOTIME, " ");

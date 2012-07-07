@@ -3,9 +3,9 @@
 
 // platform-specific headers
 #ifdef WIN32
-#include <windows.h>
+    #include <Windows.h>
 #else
-#include <sys/time.h>
+    #include <sys/time.h>
 #endif
 
 ////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{042cfd0a-7ddd-433b-b5e2-c2d0f4250a80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{4f292814-f0ee-4b65-bafe-c2c842df6244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly">
+      <UniqueIdentifier>{6d65a9ab-857d-44c1-9c8b-ddeb277e761d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly\core">
+      <UniqueIdentifier>{e3a1a3a3-4773-4624-aed2-9b1cb30a5e7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly\io">
+      <UniqueIdentifier>{d38aefd7-62cd-40f6-9e09-f5ac925bc0ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly\graphics">
+      <UniqueIdentifier>{c5cf3120-221c-4bfc-9e24-7fedc54ea4b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly\debug">
+      <UniqueIdentifier>{96dddc2c-fa60-4e22-b8dc-5a92ee625def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{f6eb0e8d-7230-4475-a3e6-c5ee106e914a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\demo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\core\app.cpp">
+      <Filter>include\firefly\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\core\random.cpp">
+      <Filter>include\firefly\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\core\timer.cpp">
+      <Filter>include\firefly\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\core\window.cpp">
+      <Filter>include\firefly\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\debug\gl_debug.cpp">
+      <Filter>include\firefly\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\debug\log.cpp">
+      <Filter>include\firefly\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\graphics\shader.cpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\io\ini_file.cpp">
+      <Filter>include\firefly\io</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\firefly.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\common.hpp">
+      <Filter>include\firefly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\opengl.hpp">
+      <Filter>include\firefly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\app.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\input.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\random.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\singleton.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\timer.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\videomode.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\window.hpp">
+      <Filter>include\firefly\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\debug\gl_debug.hpp">
+      <Filter>include\firefly\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\debug\log.hpp">
+      <Filter>include\firefly\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\shader.hpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\ini_file.hpp">
+      <Filter>include\firefly\io</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\firefly.ini">
+      <Filter>config</Filter>
+    </None>
+  </ItemGroup>
+</Project>

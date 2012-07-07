@@ -45,49 +45,53 @@ using glm::dmat4;
 
 ////////////////////////////////////////////////////////////////////////
 
-#define FF_UNICODE 0
+namespace ff {
 
-// single byte types
-typedef char             byte;
-typedef unsigned char    ubyte;
+	// single byte types
+	typedef char             byte;
+	typedef unsigned char    ubyte;
 
-// integer types
-typedef int8_t           int8;
-typedef int16_t          int16;
-typedef int32_t          int32;
-typedef int64_t          int64;
-typedef intmax_t         int_max;
-typedef intptr_t         int_ptr;
+	// integer types
+	typedef int8_t           int8;
+	typedef int16_t          int16;
+	typedef int32_t          int32;
+	typedef int64_t          int64;
+	typedef intmax_t         int_max;
+	typedef intptr_t         int_ptr;
 
-// unsigned types
-typedef uint8_t          uint8;
-typedef uint16_t         uint16;
-typedef uint32_t         uint32;
-typedef uint64_t         uint64;
-typedef uintmax_t        uint_max;
-typedef uintptr_t        uint_ptr;
+	// unsigned types
+	typedef uint8_t          uint8;
+	typedef uint16_t         uint16;
+	typedef uint32_t         uint32;
+	typedef uint64_t         uint64;
+	typedef uintmax_t        uint_max;
+	typedef uintptr_t        uint_ptr;
 
-// time types
-typedef double           delta_t;
+	// time types
+	typedef double           delta_t;
+
+	////////////////////////////////////////////////////////////////////////
+
+	// useful constants
+	const uint32 MEGABYTE = 1024U * 1024U;
+
+	// useful global functions
+	template<typename T>
+	T bytes_to_megabytes(T bytes)
+	{
+		T mb = static_cast<double>(bytes) * 9.5367431640625e-07;
+		return mb;
+	}
+
+	template<typename T>
+	T megabytes_to_bytes(T mb)
+	{
+		return ( mb * MEGABYTE );
+	}
+
+} // exiting namespace ff
 
 ////////////////////////////////////////////////////////////////////////
-
-// useful constants
-const uint32 MEGABYTE = 1024U * 1024U;
-
-// useful global functions
-template<typename T>
-T bytes_to_megabytes(T bytes)
-{
-    T mb = static_cast<double>(bytes) * 9.5367431640625e-07;
-    return mb;
-}
-
-template<typename T>
-T megabytes_to_bytes(T mb)
-{
-    return ( mb * MEGABYTE );
-}
 
 // useful global macros
 #if !defined(SAFE_DELETE)

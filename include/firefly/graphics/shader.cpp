@@ -119,12 +119,12 @@ namespace ff {
         }
 
         in_vert.seekg(0, ios::end);
-        vertSize = in_vert.tellg();
+        vertSize = (int)in_vert.tellg();
         vertData.resize(vertSize);
         in_vert.seekg(0, ios::beg);
 
         in_frag.seekg(0, ios::end);
-        fragSize = in_frag.tellg();
+        fragSize = (int)in_frag.tellg();
         fragData.resize(fragSize);
         in_frag.seekg(0, ios::beg);
 

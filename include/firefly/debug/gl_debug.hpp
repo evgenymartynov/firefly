@@ -1,5 +1,5 @@
-#ifndef FIREFLY_GL_DEBUG_HPP
-#define FIREFLY_GL_DEBUG_HPP
+#ifndef FIREFLY_GLDEBUG_HPP
+#define FIREFLY_GLDEBUG_HPP
 
 #include <string>
 using std::string;

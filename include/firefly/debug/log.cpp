@@ -38,12 +38,6 @@ namespace ff {
         static double lastTime = 0;
         stringstream buffer;
 
-        // purge trailing newlines
-        while(*msg.rbegin() == '\n')
-        {
-            msg.erase(msg.end() - 1);
-        }
-
         if (elapsed < 0)
         {
             int index = (elapsed + 1) * -1;

@@ -14,16 +14,16 @@ using std::ifstream;
 using std::ofstream;
 using std::stringstream;
 
+#define COMMENT       '#'
+#define ASSIGNMENT    '='
+#define SECTION_BEGIN '['
+#define SECTION_END   ']'
+#define QUOTEMARK     '"'
+#define END_LINE      '\n'
+
 ////////////////////////////////////////////////////////////////////////
 
 namespace ff {
-
-    const char COMMENT        = '#';
-    const char ASSIGNMENT     = '=';
-    const char SECTION_BEGIN  = '[';
-    const char SECTION_END    = ']';
-    const char QUOTEMARK      = '"';
-    const char END_LINE       = '\n';
 
 // returns if a char is considered white space
 
@@ -61,11 +61,11 @@ namespace ff {
 
 // template to convert between standard types
 
-    template<typename OUT, typename IN>
-    static OUT convert(IN value)
+    template<typename OUT_T, typename IN_T>
+    static OUT_T convert(IN_T value)
     {
         stringstream ss;
-        OUT result;
+        OUT_T result;
         ss << value;
         ss >> result;
         return result;
