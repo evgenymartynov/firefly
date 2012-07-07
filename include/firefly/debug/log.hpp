@@ -6,14 +6,13 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <firefly/core/singleton.hpp>
+
 using std::stringstream;
 using std::ofstream;
+using std::ios;
 using std::string;
 using std::vector;
-
-////////////////////////////////////////////////////////////////////////
-
-namespace ff {
 
 #define LOG_MAX_BUFFER        (50)
 #define LOG_DEFAULT_FILENAME  "firefly.log"
@@ -23,7 +22,11 @@ namespace ff {
 #define LOG_WARNING  -4
 #define LOG_EVENT    -5
 
-    class log
+////////////////////////////////////////////////////////////////////////
+
+namespace ff {
+
+    class log : public singleton<log>
     {
     public:
         log(string outFile = LOG_DEFAULT_FILENAME);
@@ -46,7 +49,6 @@ namespace ff {
 
 ////////////////////////////////////////////////////////////////////////
 
-extern ff::log GlobalLog;
-#define g_Log GlobalLog
+#define g_Log ff::log::get_singleton()
 
 #endif

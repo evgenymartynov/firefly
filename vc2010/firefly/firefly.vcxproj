@@ -40,14 +40,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)/../</OutDir>
-    <IncludePath>$(ProjectDir)/../../include/;$(ProjectDir)/../../src/;$(ProjectDir)/../../external/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/../../include;$(ProjectDir)/../../src;$(ProjectDir)/../../external;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)/../../external;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)/../</OutDir>
-    <IncludePath>$(ProjectDir)/../include;$(ProjectDir)/../src;$(ProjectDir)/../external;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)/../external;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)/../../</OutDir>
+    <IncludePath>$(ProjectDir)/../../include;$(ProjectDir)/../../src;$(ProjectDir)/../../external;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)/../../external;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

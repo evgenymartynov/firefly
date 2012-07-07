@@ -5,16 +5,19 @@ MODULES := core debug io graphics
 SRC_DIR   := src include $(addprefix include/firefly/,$(MODULES))
 BUILD     := src include $(addprefix include/firefly/,$(MODULES))
 BUILD_DIR := $(addprefix build/,$(BUILD))
-INCLUDES  := $(addprefix -I,$(SRC_DIR)) -Iexternal
-LIB       :=
+INC       := $(addprefix -I,$(SRC_DIR)) -Iexternal
+LIB       := -Lexternal
 SRC       := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
 OBJ       := $(SRC:%.cpp=build/%.o)
 
 vpath %.cpp $(SRC_DIR)
 
 CC         := g++ -g
-CFLAGS     := $(INCLUDES) -Wall -Werror -O -std=c++0x
-LDFLAGS    := $(LIB) -lGL -lglfw -lGLEW
+PROJECT    := -fno-exceptions -pthread
+STATIC_LIB := external/libglfw.a external/libGLEW.a
+CFLAGS     := $(PROJECT) $(INC) -Wall -Werror -O -std=c++0x
+LDFLAGS-S  := $(PROJECT) $(LIB) -lGL
+LDFLAGS    := $(LDFLAGS-S) -lGLEW -lglfw
 EXECUTABLE := demo
 
 #build macro
@@ -27,18 +30,24 @@ endef
 .PHONY: all checkdirs clean
 
 #targets
-all: checkdirs $(EXECUTABLE).exe
+all: legacy
 
 test:
 	@echo src: $(SRC)
 	@echo obj: $(OBJ)
 	@echo obj: $(BUILD_DIR)
 
-firefly: checkdirs $(EXECUTABLE).exe
+firefly: checkdirs $(EXECUTABLE).exe-static
+
+legacy: checkdirs $(EXECUTABLE).exe
+
+$(EXECUTABLE).exe-static: $(OBJ)
+	@$(CC) $(LDFLAGS-S) $^ $(STATIC_LIB) -o $(EXECUTABLE)
+	@echo firefly done.
 
 $(EXECUTABLE).exe: $(OBJ)
-	@$(CC) $(LDFLAGS) $^ -o $(EXECUTABLE)
-	@echo done.
+	@$(CC) $(LDFLAGS) $^ -lglfw -lGLEW -o $(EXECUTABLE)
+	@echo firefly-legacy done.
 
 checkdirs: $(BUILD_DIR)
 

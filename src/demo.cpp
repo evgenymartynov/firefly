@@ -14,15 +14,17 @@ namespace ff {
         GL_DEBUG(glCullFace(GL_BACK));
         GL_DEBUG(glFrontFace(GL_CCW));
 
-        g_Shader.Compile("shader");
+        g_Shader.Compile("text");
         return true;
     }
 
+
     bool App::Exit()
     {
-		g_Shader.DeletePrograms();
+        g_Shader.DeletePrograms();
         return true;
     }
+
 
     void App::Update(const delta_t dt, const delta_t elapsed)
     {
@@ -33,10 +35,18 @@ namespace ff {
                        m_fpsAvg, mi.x, mi.y);
     }
 
+
     void App::Render(const delta_t dt, const delta_t elapsed)
     {
-        GL_DEBUG(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
     }
+
+
+    void App::Resize(int width, int height)
+    {
+
+    }
+
 
     void App::Input(const input & msg)
     {

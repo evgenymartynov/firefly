@@ -1,7 +1,5 @@
 #include <firefly/debug/log.hpp>
-
-// global instance of log
-ff::log GlobalLog;
+#include <cassert>
 
 // variety of log entry prefixes
 string prefix[5] = { ": ", "# ", "", "* ", ">> " };
@@ -105,17 +103,15 @@ namespace ff {
 
         if (!m_Created)
         {
-            logFile.open(m_Filename.c_str(), std::ios::out);
+            logFile.open(m_Filename.c_str(), ios::out | ios::binary);
             m_Created = true;
         }
         else
         {
-            logFile.open(m_Filename.c_str(), std::ios::app);
+            logFile.open(m_Filename.c_str(), ios::app | ios::binary);
         }
 
-        if (!logFile.is_open())
-            return;
-
+        assert(logFile.is_open());
         if (!m_Entries.empty())
         {
             auto it = m_Entries.begin(), end = m_Entries.end();

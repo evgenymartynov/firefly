@@ -64,6 +64,9 @@ namespace ff {
 
     void ShaderMgr::DeletePrograms()
     {
+        if (m_programs.empty())
+            return;
+
         auto it = m_programs.begin(), end = m_programs.end();
         for (; it != end; ++it)
         {

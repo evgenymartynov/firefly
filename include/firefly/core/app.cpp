@@ -2,11 +2,16 @@
 #include <firefly/io/ini_file.hpp>
 #include <firefly/debug/gl_debug.hpp>
 
+
 // handle the main function
 int main(int argc, char **arv)
 {
+    // create app
     ff::App kate_beckinsale_rocks_my_world;
     assert(ff::App::get_singleton_ptr());
+
+    // start log
+    ff::log all_your_base_are_belong_to_me;
 
     if (!g_App.init())
     {
@@ -16,11 +21,13 @@ int main(int argc, char **arv)
     }
     else
     {
+        g_Log.flush();
         g_App.main_loop(); // --> greatest video game ever... tribute
         g_App.shutdown();  // --x so long, and thanks for all the fish
     }
     return FF_EXIT_SUCCESS;
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -94,6 +101,7 @@ namespace ff {
         glfwSetMousePosCallback(ffOnMouseMove);
         glfwSetMouseWheelCallback(ffOnMouseWheel);
 
+        glfwEnable(GLFW_AUTO_POLL_EVENTS);
         glfwEnable(GLFW_STICKY_MOUSE_BUTTONS);
         glfwEnable(GLFW_STICKY_KEYS);
         glfwEnable(GLFW_MOUSE_CURSOR);
@@ -159,13 +167,7 @@ namespace ff {
         g_Log.write(LOG_EVENT, "Firefly - C/C++ OpenGL framework by "
                     "John Cramb (http://www.geekdownunder.net)");
         g_Log.write(LOG_NOTIME, " ");
-
-        // load config file
-        if (!load_config(FF_CONFIG_FILE, ws, glc, vm))
-        {
-            g_Log.write(LOG_ERROR, "app::init > failed to load config");
-            return false;
-        }
+        load_config(FF_CONFIG_FILE, ws, glc, vm);
 
         // init glfw
         if (glfwInit() == GL_TRUE)
@@ -201,9 +203,10 @@ namespace ff {
             glewExperimental = GL_TRUE;
 
         // init glew to set up OpenGL extensions
-        if (glewInit() != GLEW_OK)
+        GLenum e = glewInit();
+        if (GLEW_OK != e)
         {
-            g_Log.write(LOG_ERROR, "app::init > failed to init GLEW!");
+            g_Log.write(LOG_ERROR, "GLEW > %s", glewGetErrorString(e));
             return false;
         }
 
@@ -245,7 +248,7 @@ namespace ff {
         Exit();
 
         // shutdown each subsystem
-		m_timer.stop();
+        m_timer.stop();
 
         glfwTerminate();
         g_Log.write(LOG_NOTIME, " ");
@@ -283,6 +286,8 @@ namespace ff {
 
     void App::frame_render(const delta_t dt, const delta_t elapsed)
     {
+        GL_DEBUG(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                         GL_STENCIL_BUFFER_BIT));
         Render(dt, elapsed);
         glfwSwapBuffers();
         m_frameTime = 0;
@@ -385,6 +390,7 @@ namespace ff {
     {
         g_App.m_window.Resize(width, height);
         GL_DEBUG(glViewport(0, 0, width, height));
+        g_App.Resize(width, height);
     }
 
 
