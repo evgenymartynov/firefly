@@ -11,34 +11,23 @@
 
 namespace ff {
 
-// basic shader info
-
-    struct Shader
-    {
-        GLuint programID;
-        GLuint vertID;
-        GLuint fragID;
-    };
-
 // shader manager singleton
 
     class ShaderMgr : public singleton<ShaderMgr>
     {
     public:
-        ShaderMgr() : m_cur(0) { }
-        ~ShaderMgr() { DeletePrograms(); }
-
-        void DeletePrograms();
-        bool Compile(string name, string vert, string frag);
-        bool Compile(string name, string prefix);
-        bool Compile(string name);
-
-        uint32 Get(string program = "");
-        uint32 Use(string program) {m_cur = Get(program); return m_cur;}
+        ShaderMgr() { }
+        ~ShaderMgr() { }
+      
+		GLuint CreateProgram(string vert, string frag, ...);
+		void DeletePrograms();
 
     protected:
-        map<string, Shader> m_programs;
-        GLuint m_cur;
+        vector<GLuint> m_shaders;
+
+		bool LoadShader(GLuint shader, string filename);
+		bool CheckShaderCompile(GLint shader, const string & file);
+		bool CheckProgramLink(GLint program);
     };
 
 // global access

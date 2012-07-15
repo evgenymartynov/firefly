@@ -15,179 +15,175 @@ namespace ff {
     ShaderMgr GlobalShaderMgr;
 
 
+// create a shader program from specified vert/fragment shaders
+
+	GLuint ShaderMgr::CreateProgram(string vert, string frag, ...) 
+	{
+		// generate handles
+		GLuint hProgram = 0;
+		GLuint hVert = GL_DEBUG(glCreateShader(GL_VERTEX_SHADER));
+		GLuint hFrag = GL_DEBUG(glCreateShader(GL_FRAGMENT_SHADER));
+
+		// load shaders
+		if (!LoadShader(hVert, vert) ||
+		    !LoadShader(hFrag, frag)) 
+		{
+			GL_DEBUG(glDeleteShader(hVert));
+			GL_DEBUG(glDeleteShader(hFrag));
+			return 0;
+		}
+
+		// compile shaders
+		GL_DEBUG(glCompileShader(hVert));
+		GL_DEBUG(glCompileShader(hFrag));
+		if (!CheckShaderCompile(hVert, vert) ||
+		    !CheckShaderCompile(hFrag, frag)) 
+		{
+			GL_DEBUG(glDeleteShader(hVert));
+			GL_DEBUG(glDeleteShader(hFrag));
+			return 0;
+		}
+
+		// create the shader program
+		hProgram = GL_DEBUG(glCreateProgram());
+		GL_DEBUG(glAttachShader(hProgram, hVert));
+		GL_DEBUG(glAttachShader(hProgram, hFrag));
+
+		// bind attributes to their locations
+		va_list attributes;
+		va_start(attributes, frag);
+
+		char * arg;
+		int argCount = va_arg(attributes, int);
+		for (int i = 0; i < argCount; ++i) 
+		{
+			int index = va_arg(attributes, int);
+			arg = va_arg(attributes, char *);
+			GL_DEBUG(glBindAttribLocation(hProgram, index, arg));
+		}
+
+		va_end(attributes);
+
+		// finish linking the program, and clean up shaders
+		GL_DEBUG(glLinkProgram(hProgram));
+		GL_DEBUG(glDeleteShader(hVert));
+		GL_DEBUG(glDeleteShader(hFrag));
+
+		if (!CheckProgramLink(hProgram))
+		{
+			GL_DEBUG(glDeleteProgram(hProgram));
+			return 0;
+		}		
+
+		g_Log.write(LOG_LOAD, "Shader program created > [%d] ('%s, '%s')",
+								hProgram, vert.c_str(), frag.c_str());
+
+		m_shaders.push_back(hProgram);
+		return hProgram;
+	}
+
+
+// deletes all loaded programs
+
+	void ShaderMgr::DeletePrograms()
+	{
+		if (m_shaders.empty())
+            return;
+
+        auto it = m_shaders.begin(), end = m_shaders.end();
+        for (; it != end; ++it)
+        {
+            GL_DEBUG(glUseProgram(*it));
+            GL_DEBUG(glDeleteProgram(*it));
+        }
+
+        m_shaders.clear();
+	}
+
+
+// internal helper function to retrieve shader source from file
+
+    bool ShaderMgr::LoadShader(GLuint shader, string filename) 
+	{
+		vector<byte> buffer;
+		string path(FF_SHADER_PATH + filename);
+		ifstream file(path.c_str(), ios::in | ios::binary); 
+
+		if (file.good())
+        {
+			// calculate file size in  bytes
+			GLint fileSize = (GLint)file.tellg();
+			file.seekg(0, ios::end);
+            fileSize = (GLint)file.tellg() - fileSize;
+
+			// resize byte buffer and read in data
+			file.seekg(0, ios::beg);
+			buffer.resize(fileSize);
+			file.read(&buffer[0], fileSize);
+
+			// pass the shader source to open gl
+			const GLchar * src = &buffer[0];
+			GL_DEBUG(glShaderSource(shader, 1, &src, &fileSize));
+			return true;
+        } 
+		else 
+		{
+			// couldn't open the file or an error occurred
+			g_Log.write(LOG_ERROR, "ShaderMgr::LoadShader > unable to"
+                  " load file '%s'!", filename.c_str());
+			return false;
+		}
+	}
+
+
 // checks for any shader compilation errors
 
-    bool debug_shader_compile(GLint shader, const string & file)
+    bool ShaderMgr::CheckShaderCompile(GLint shader, const string & file)
     {
-        vector<char> err;
         GLint success = GL_FALSE;
-        int len;
-
         GL_DEBUG(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
-        if (!success)
+
+        if (success == GL_FALSE)
         {
-            GL_DEBUG(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len));
-            err.resize(len);
-            GL_DEBUG(glGetShaderInfoLog(shader, len, NULL, &err[0]));
-            g_Log.write(LOG_ERROR, "ShaderMgr::Compile > Failed to "
-                        "compile '%s'!", file.c_str());
-            g_Log.write(LOG_ERROR, &err[0]);
-            return false;
+			// get length of log
+            //GL_DEBUG(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len));
+			char infoLog[FF_LOG_MAX];
+ 
+			// pass the info log to the app log file
+            GL_DEBUG(glGetShaderInfoLog(shader, FF_LOG_MAX, NULL, infoLog));
+            g_Log.write(LOG_ERROR, "ShaderMgr::CreateProgram > Failed"
+                        " to compile '%s'!", file.c_str());
+            g_Log.write(LOG_ERROR, "OGL INFO LOG\n%s", infoLog);
         }
-        return true;
+	
+		return success == GL_TRUE ? true : false;
     }
 
 
 // checks for any program compilation errors
 
-    bool debug_program_compile(GLint program, const string & name)
+    bool ShaderMgr::CheckProgramLink(GLint program)
     {
-        vector<char> err;
         GLint success = GL_FALSE;
-        int len;
-
         GL_DEBUG(glGetProgramiv(program, GL_LINK_STATUS, &success));
+
         if (!success)
         {
-            GL_DEBUG(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len));
-            err.resize(len);
-            GL_DEBUG(glGetProgramInfoLog(program, len, NULL, &err[0]));
-            g_Log.write(LOG_ERROR, "ShaderMgr::Compile > Failed to "
-                        "compile program '%s'!", name.c_str());
-            g_Log.write(LOG_ERROR, &err[0]);
-            return false;
-        }
-        return true;
-    }
+			// get length of log
+            //GL_DEBUG(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len));
+			char infoLog[FF_LOG_MAX];
 
-// deletes all loaded programs
-
-    void ShaderMgr::DeletePrograms()
-    {
-        if (m_programs.empty())
-            return;
-
-        auto it = m_programs.begin(), end = m_programs.end();
-        for (; it != end; ++it)
-        {
-            Shader & s = it->second;
-
-            GL_DEBUG(glUseProgram(0));
-            GL_DEBUG(glDetachShader(s.programID, s.vertID));
-            GL_DEBUG(glDetachShader(s.programID, s.fragID));
-            GL_DEBUG(glDeleteShader(s.vertID));
-            GL_DEBUG(glDeleteShader(s.fragID));
-            GL_DEBUG(glDeleteProgram(s.programID));
+			// pass the info log to the app log file
+            GL_DEBUG(glGetProgramInfoLog(program, FF_LOG_MAX, NULL, infoLog));
+            g_Log.write(LOG_ERROR, "ShaderMgr::CreateProgram > Failed to "
+                        "link program [%d]!", program);
+            g_Log.write(LOG_ERROR, "OpenGL INFO LOG\n%s", infoLog);
         }
 
-        m_programs.clear();
-        m_cur = 0;
-    }
-
-// compiles a single shader using its name as the prefix
-
-    bool ShaderMgr::Compile(string name)
-    {
-        return Compile(name, name + ".vert", name + ".frag");
-    }
-
-
-// compiles a single shader given a common shader prefix
-
-    bool ShaderMgr::Compile(string name, string prefix)
-    {
-        return Compile(name, prefix + ".vert", prefix + ".frag");
-    }
-
-
-// compiles a single shader with explicitly specified vert/frag files
-
-    bool ShaderMgr::Compile(string name, string vert, string frag)
-    {
-        Shader s;
-        vector<char> vertData, fragData;
-        GLint vertSize = 0;
-        GLint fragSize = 0;
-
-        // load shader strings from files
-        string path = FF_SHADER_PATH;
-        ifstream in_vert((path + vert).c_str(), ios::in | ios::binary);
-        ifstream in_frag((path + frag).c_str(), ios::in | ios::binary);
-
-        if (!in_vert.is_open() || !in_frag.is_open())
-        {
-            g_Log.write(LOG_ERROR, "ShaderMgr::Compile > unable to"
-                  " find files %s, %s!",vert.c_str(), frag.c_str());
-            return false;
-        }
-
-        in_vert.seekg(0, ios::end);
-        vertSize = (int)in_vert.tellg();
-        vertData.resize(vertSize);
-        in_vert.seekg(0, ios::beg);
-
-        in_frag.seekg(0, ios::end);
-        fragSize = (int)in_frag.tellg();
-        fragData.resize(fragSize);
-        in_frag.seekg(0, ios::beg);
-
-        in_vert.read(&vertData[0], vertSize);
-        in_vert.close();
-        in_frag.read(&fragData[0], fragSize);
-        in_frag.close();
-
-        s.vertID = GL_CHECK(glCreateShader(GL_VERTEX_SHADER));
-        s.fragID = GL_CHECK(glCreateShader(GL_FRAGMENT_SHADER));
-
-        // compile shaders
-        const GLchar * vertSrc = &vertData[0];
-        GL_DEBUG(glShaderSource(s.vertID, 1, &vertSrc, &vertSize));
-        GL_DEBUG(glCompileShader(s.vertID));
-        debug_shader_compile(s.vertID, vert);
-
-        const GLchar * fragSrc = &fragData[0];
-        GL_DEBUG(glShaderSource(s.fragID, 1, &fragSrc, &fragSize));
-        GL_DEBUG(glCompileShader(s.fragID));
-        debug_shader_compile(s.fragID, frag);
-
-        // create shader program
-        s.programID = GL_CHECK(glCreateProgram());
-        GL_DEBUG(glAttachShader(s.programID, s.vertID));
-        GL_DEBUG(glAttachShader(s.programID, s.fragID));
-        GL_DEBUG(glLinkProgram (s.programID));
-
-        if (debug_program_compile(s.programID, name))
-        {
-            m_cur = s.programID;
-            GL_DEBUG(glBindAttribLocation(m_cur, 0, "in_Position"));
-            GL_DEBUG(glBindAttribLocation(m_cur, 1, "in_UV"));
-            m_programs[name] = s;
-            g_Log.write(LOG_EVENT, "Compiled '%s' shader program.",
-                        name.c_str());
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-
-// returns the program id for requested shader
-
-    uint32 ShaderMgr::Get(string program)
-    {
-        if (program.empty())
-            return 0;
-
-        auto p = m_programs.find(program);
-
-        if (p == m_programs.end())
-            return 0;
-
-        return (p->second.programID);
+        return success == GL_TRUE ? true : false;
     }
 
 } // exiting namespace ff
 
 ////////////////////////////////////////////////////////////////////////
+

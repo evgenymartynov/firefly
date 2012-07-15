@@ -68,8 +68,8 @@ namespace ff {
             stringstream buffer;
             buffer << width << "x" << height << "x" << (int)bpp();
             buffer << " VSync(" << (vsync ? "ON" : "OFF") << ") FSAA(";
-            buffer << (int)FSAA << ") Depth " << (int)depth_bits;
-            buffer << "-bit Stencil " << (int)stencil_bits << "-bit";
+            buffer << (int)FSAA << ")\n: Buffers: Depth " << (int)depth_bits;
+            buffer << "-bit, Stencil " << (int)stencil_bits << "-bit";
             return (buffer.str());
         }
 

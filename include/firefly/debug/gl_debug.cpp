@@ -2,6 +2,9 @@
 #include <firefly/debug/log.hpp>
 #include <firefly/debug/gl_debug.hpp>
 
+
+// standard OpenGL error checking function
+
 void GLDebugFunction(const string & file, unsigned int line)
 {
     GLenum errorCode = glGetError();
@@ -54,9 +57,9 @@ void GLDebugFunction(const string & file, unsigned int line)
                    " stack is already at its lowest point.";
             break;
         }
-        case GL_INVALID_FRAMEBUFFER_OPERATION_EXT :
+        case GL_INVALID_FRAMEBUFFER_OPERATION :
         {
-            error = "GL_INVALID_FRAMEBUFFER_OPERATION_EXT";
+            error = "GL_INVALID_FRAMEBUFFER_OPERATION";
             desc = "attempt to read from or write/render to a "
                    "framebuffer that is not complete (invalid FBO).";
             break;
@@ -69,4 +72,63 @@ void GLDebugFunction(const string & file, unsigned int line)
                     error.c_str(),
                     desc.c_str());
     }
+}
+
+
+// handles status checking of frame buffer objects
+
+void GLDebugFramebuffer(GLuint target, const string & file, unsigned int line)
+{
+	GLenum fboStatus = glCheckFramebufferStatus(target);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		string error = "UNKNOWN";
+        string desc  = "Invalid frame buffer status error.";
+
+		switch (fboStatus)
+		{
+		case GL_FRAMEBUFFER_UNDEFINED:
+			error = "GL_FRAMEBUFFER_UNDEFINED";
+            desc = "does a window exist?";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			error = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+            desc = "check the status of each attachment!";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			error = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+            desc = "must attach at least one buffer to the fbo.";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+			error = "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER";
+            desc = "check that all attachments enabled via"
+				   " glDrawBuffers exist in the fbo.";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+			error = "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER";
+            desc = "check that all attachments enabled via"
+				   " glReadBuffer exist in the fbo.";
+			break;
+		case GL_FRAMEBUFFER_UNSUPPORTED:
+			error = "GL_FRAMEBUFFER_UNSUPPORTED";
+            desc = "incompatible formats used in attached buffers.";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+			error = "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE";
+            desc = "check that the number of samples for each "
+				   "attachment is the same.";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+			error = "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS";
+            desc = "check that the number of layers for each "
+				   "attachment is the same.";
+			break;
+		}
+
+		g_Log.write(LOG_ERROR, "(%s, %i) %s : %s",
+            file.substr(file.find_last_of("\\/") + 1).c_str(),
+            line,
+            error.c_str(),
+            desc.c_str());
+	}
 }

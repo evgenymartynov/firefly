@@ -163,11 +163,11 @@ namespace ff {
             profile = "COMPATIBILITY";
         }
 
-        g_Log.write(LOG_NOTIME, "Using %s OpenGL Profile.",
+        g_Log.write(LOG_CONFIG, "Using %s OpenGL Profile.",
                     profile.c_str());
 
         // GL context
-        g_Log.write(LOG_NOTIME, "OpenGL Context (%i.%i) : Forward"
+        g_Log.write(LOG_CONFIG, "OpenGL Context (%i.%i) : Forward"
                     "Compatible (%s) Debug (%s)",
                     activeGLC.majorVersion, activeGLC.minorVersion,
                     activeGLC.fwdCompat ? "YES" : "NO",
@@ -200,7 +200,7 @@ namespace ff {
             g_Log.write(LOG_WARNING, "NOT SUPPORTED - %s",
                         vm.str().c_str());
         }
-        g_Log.write(LOG_NOTIME, "Video Mode: %s",
+        g_Log.write(LOG_CONFIG, "Video Mode: %s",
                     activeVM.str().c_str());
 
         // set the vsync

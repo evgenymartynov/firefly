@@ -12,9 +12,10 @@
 #define FF_EXIT_FAILURE -1
 #define FF_CONFIG_FILE  "firefly.ini"
 #define FF_LOG_FILE     "firefly.log"
+#define FF_SCREENSHOT_DIR "data/screenshots/"
 
 // forward declaration of main
-int main(int,char**);
+int main(int,char*[]);
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +62,7 @@ namespace ff {
 
         // state-based app functions
         bool Load();
-        bool Exit();
+        void Exit();
         void Update(const delta_t dt, const delta_t elapsed);
         void Render(const delta_t dt, const delta_t elapsed);
 
@@ -74,10 +75,13 @@ namespace ff {
 
         // app helper functions
         void Log(const char * format, ...);
+		void Screenshot(string file);
 
         // getters
         int GetWidth() const { return m_window.GetWidth(); }
         int GetHeight() const { return m_window.GetHeight(); }
+		void SetSize(int width, int height) { glfwSetWindowSize(width, height); }
+		void SetVSync(bool active) { glfwSwapInterval(active ? 1 : 0); }
         bool IsActive() const { return m_bActive; }
         bool IsRunning() const { return m_bRunning; }
         delta_t GetFrameTime() const { return m_frameTime; }
@@ -94,7 +98,7 @@ namespace ff {
 
         // app window functions
         void configure_app();
-        bool load_config(const string & filePath,
+        void load_config(const string & filePath,
                          WindowSettings & ws,
                          GLContext & glc,
                          VideoMode & vm);

@@ -1,5 +1,6 @@
 #include <firefly/core/random.hpp>
 #include <cstdlib>
+#include <ctime>
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -11,8 +12,12 @@ namespace ff {
 
     void rng_seed(unsigned int seed)
     {
-        g_seed = seed;
-        srand(seed);
+		if (seed) {
+			g_seed = seed;
+		} else {
+			g_seed = unsigned int (time(NULL));
+		}
+        srand(g_seed);
     }
 
 // returns the current seed being used
@@ -24,7 +29,7 @@ namespace ff {
 
 // basic function for random number generation
 
-    unsigned int rng(unsigned int min, unsigned int max)
+    int rng(unsigned int min, unsigned int max)
     {
         // return ( min + ((rand() % (max - min)) + 1) );
         return (min + int(((max-min) * rand()) / (RAND_MAX + 1.0)));
@@ -32,9 +37,9 @@ namespace ff {
 
 // helper function for simple random numbers
 
-    unsigned int rng(unsigned int max)
+    int rng(unsigned int max)
     {
-        return rng(1, max);
+        return rng(0, max);
     }
 
 } // exiting namespace ff

@@ -14,13 +14,17 @@ using std::ios;
 using std::string;
 using std::vector;
 
+#define FF_LOG_MAX 512
+
 #define LOG_MAX_BUFFER        (50)
 #define LOG_DEFAULT_FILENAME  "firefly.log"
-#define LOG_NOTIME   -1
+#define LOG_CONFIG   -1
 #define LOG_ERROR    -2
 #define LOG_INTERNAL -3
 #define LOG_WARNING  -4
 #define LOG_EVENT    -5
+#define LOG_LOAD     -6
+#define LOG_UNLOAD   -7
 
 ////////////////////////////////////////////////////////////////////////
 

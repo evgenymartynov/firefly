@@ -5,10 +5,10 @@
 
 namespace ff {
 
-    extern inline void rng_seed(unsigned int seed);
+    extern inline void rng_seed(unsigned int seed = 0);
     extern inline unsigned int rng_get_seed();
-    extern inline unsigned int rng(unsigned int min, unsigned int max);
-    extern inline unsigned int rng(unsigned int max);
+    extern inline int rng(unsigned int min, unsigned int max);
+    extern inline int rng(unsigned int max);
 
 } // exiting namespace ff
 

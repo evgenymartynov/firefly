@@ -1,11 +1,19 @@
 #include <firefly/core/app.hpp>
-#include <firefly/io/ini_file.hpp>
+#include <firefly/core/helper/string.hpp>
 #include <firefly/debug/gl_debug.hpp>
+#include <firefly/io/SOIL/SOIL.h>
+#include <firefly/io/ini_file.hpp>
 
+#include <firefly/graphics/texture.hpp>
 
 // handle the main function
-int main(int argc, char **arv)
+int main(int argc, char * argv[])
 {
+	// set debug flags
+	#if defined(_DEBUG) && defined(WIN32)
+		_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	#endif
+
     // create app
     ff::App kate_beckinsale_rocks_my_world;
     assert(ff::App::get_singleton_ptr());
@@ -76,6 +84,24 @@ namespace ff {
     }
 
 
+// save the current OpenGL buffer to file
+
+	void App::Screenshot(string file)
+	{
+		string ext = to_upper(file.substr(file.size() - 3, 3));
+		file = FF_SCREENSHOT_DIR + file;
+		int type;
+
+		if (ext == "DDS")       type = SOIL_SAVE_TYPE_DDS;
+		else if (ext == "TGA") 	type = SOIL_SAVE_TYPE_TGA;
+		else 					type = SOIL_SAVE_TYPE_BMP;
+	
+		// unknown extensions are saved as bitmaps
+		SOIL_save_screenshot( file.c_str(), type, 0, 0, GetWidth(), GetHeight());
+		g_App.Log("Screenshot saved to '%s'.", file.c_str());
+	}
+
+
 // update window title
 
     void App::SetWindowTitle(const char * title, ...)
@@ -112,7 +138,7 @@ namespace ff {
 
 // load app config settings from ini file
 
-    bool App::load_config(const string & filePath,
+    void App::load_config(const string & filePath,
                      WindowSettings & ws,
                      GLContext & glc,
                      VideoMode & vm)
@@ -149,8 +175,6 @@ namespace ff {
         int coreProfile = config.get<int>("CoreProfile", -1);
         if (coreProfile == 1) glc.profile = GLFW_OPENGL_CORE_PROFILE;
         if (coreProfile == 0) glc.profile = GLFW_OPENGL_COMPAT_PROFILE;
-
-        return true;
     }
 
 
@@ -163,10 +187,10 @@ namespace ff {
         VideoMode vm;
         GLContext glc;
 
-        g_Log.write(LOG_NOTIME, " ");
-        g_Log.write(LOG_EVENT, "Firefly - C/C++ OpenGL framework by "
-                    "John Cramb (http://www.geekdownunder.net)");
-        g_Log.write(LOG_NOTIME, " ");
+        g_Log.write(LOG_INTERNAL, " ");
+        g_Log.write(LOG_EVENT, "=-. Firefly .-= C/C++ OpenGL framework\n   "
+                    "by John Cramb (http://www.geekdownunder.net)");
+        g_Log.write(LOG_INTERNAL, " ");
         load_config(FF_CONFIG_FILE, ws, glc, vm);
 
         // init glfw
@@ -174,7 +198,7 @@ namespace ff {
         {
             int x, y, z;
             glfwGetVersion(&x, &y, &z);
-            g_Log.write(LOG_NOTIME, "Using GLFW Version %i.%i.%i",
+            g_Log.write(LOG_CONFIG, "Using GLFW Version %i.%i.%i",
                         x, y, z);
         }
         else
@@ -184,7 +208,7 @@ namespace ff {
 
         // get info about host computer
         m_numProcessors = glfwGetNumberOfProcessors();
-        g_Log.write(LOG_NOTIME, "CPU: (detected %i logical cores)",
+        g_Log.write(LOG_CONFIG, "CPU: (detected %i logical cores)",
                     m_numProcessors);
 
         // create the app window
@@ -211,13 +235,19 @@ namespace ff {
         }
 
         // start sub-systems
+		g_Texture.Init();
 
-        g_Log.write(LOG_NOTIME, " ");
+		// load the game
+        g_Log.write(LOG_INTERNAL, " ");
         g_Log.write(LOG_EVENT, "Loading Game...");
 
-        Load();
+        if (!Load()) 
+		{
+			g_Log.write(LOG_ERROR, "App::Load > returned false!");
+            return false;
+		}
 
-        g_Log.write(LOG_NOTIME, " ");
+        g_Log.write(LOG_INTERNAL, " ");
         return (m_bRunning = true);
     }
 
@@ -233,9 +263,10 @@ namespace ff {
 
         while (m_bRunning)
         {
+			// NOTE runTime should be game time later.
             frameTime = GetFrameTime();
-            frame_update(m_frameTime, m_gameTime);
-            frame_render(m_frameTime, m_gameTime);
+            frame_update(m_frameTime, m_runTime);
+            frame_render(m_frameTime, m_runTime);
             update_timer();
         }
     }
@@ -245,25 +276,27 @@ namespace ff {
 
     void App::shutdown()
     {
+		g_Log.write(LOG_INTERNAL, " ");
+        g_Log.write(LOG_EVENT, "Exiting Game...");
         Exit();
 
         // shutdown each subsystem
         m_timer.stop();
 
         glfwTerminate();
-        g_Log.write(LOG_NOTIME, " ");
+        g_Log.write(LOG_INTERNAL, " ");
 
         // record some stats
         int mins = static_cast<int>(m_runTime * 0.0166666666666667);
         float secs = (float)m_runTime - static_cast<float>(mins * 60);
-        g_Log.write(LOG_NOTIME, "Running Time: %i mins %.2f secs",
+        g_Log.write(LOG_CONFIG, "Running Time: %i mins %.2f secs",
                     mins, secs);
-        g_Log.write(LOG_NOTIME, "%.2f fps high, %.2f fps low. "
+        g_Log.write(LOG_CONFIG, "%.2f fps high, %.2f fps low. "
                     "(Avg: %.2f fps)", m_fpsMax, m_fpsMin, m_fpsAvg);
-        g_Log.write(LOG_NOTIME, "%.5f ms/F high, %.5f ms/F low. "
+        g_Log.write(LOG_CONFIG, "%.5f ms/F high, %.5f ms/F low. "
                     "(Avg: %.5f ms/F)", m_msPerFrameMax,
                     m_msPerFrameMin, m_msPerFrameAvg);
-        g_Log.write(LOG_NOTIME, " ");
+        g_Log.write(LOG_INTERNAL, " ");
     }
 
 
@@ -277,7 +310,6 @@ namespace ff {
             if (active) on_active();
             else on_inactive();
         }
-
         Update(dt, elapsed);
     }
 
@@ -286,8 +318,6 @@ namespace ff {
 
     void App::frame_render(const delta_t dt, const delta_t elapsed)
     {
-        GL_DEBUG(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-                         GL_STENCIL_BUFFER_BIT));
         Render(dt, elapsed);
         glfwSwapBuffers();
         m_frameTime = 0;
@@ -335,9 +365,9 @@ namespace ff {
     void App::on_active()
     {
         m_bActive = true;
-
         if (m_bAutoPause)
         {
+			// not implemented yet
         }
     }
 
@@ -347,9 +377,9 @@ namespace ff {
     void App::on_inactive()
     {
         m_bActive = false;
-
         if (m_bAutoPause)
         {
+			// not implemented yet
         }
     }
 
@@ -389,7 +419,6 @@ namespace ff {
     void GLFWCALL ffOnWindowResize(int width, int height)
     {
         g_App.m_window.Resize(width, height);
-        GL_DEBUG(glViewport(0, 0, width, height));
         g_App.Resize(width, height);
     }
 

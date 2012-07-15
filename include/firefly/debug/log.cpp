@@ -2,7 +2,7 @@
 #include <cassert>
 
 // variety of log entry prefixes
-string prefix[5] = { ": ", "# ", "", "* ", ">> " };
+string prefix[7] = { ": ", "# ", "", "* ", ">> ", "+ ", "- " };
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -79,16 +79,25 @@ namespace ff {
 
     void log::write(double elapsed, const char * format, ...)
     {
+		static string strbuf;
         if ( !valid() )
             return;
 
-        static string strbuf;
-        char buffer[256];
+		strbuf.clear();
+        char buffer[FF_LOG_MAX + 1];
+		buffer[FF_LOG_MAX - 1] = '\0';
         va_list va;
         va_start(va, format);
-        vsnprintf(buffer, 256, format, va);
+        vsnprintf(buffer, FF_LOG_MAX, format, va);
         va_end(va);
-        write(elapsed, strbuf = buffer);
+		
+		buffer[FF_LOG_MAX] = '\0';
+		strbuf = buffer;
+		if (buffer[FF_LOG_MAX - 1] != '\0') {
+			strbuf += "...";
+		}
+
+        write(elapsed, strbuf);
     }
 
 

@@ -6,7 +6,13 @@
 *.sdf
 *.obj
 *.exe
+*.vp
+*.fp
+*.vs
+*.fs
+*.suo
 vc2010/firefly/[Dd]ebug/
 vc2010/firefly/[Rr]elease/
 vc2010/firefly/ipch
 log
+external/GLTools/
