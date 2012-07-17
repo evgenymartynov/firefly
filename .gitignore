@@ -11,8 +11,11 @@
 *.vs
 *.fs
 *.suo
+*.ppk
+*.psess
+*.vsp
 vc2010/firefly/[Dd]ebug/
 vc2010/firefly/[Rr]elease/
 vc2010/firefly/ipch
 log
-external/GLTools/
+data/screenshots/

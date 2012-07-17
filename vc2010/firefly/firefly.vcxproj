@@ -39,14 +39,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)/../</OutDir>
-    <IncludePath>$(ProjectDir)/../../include;$(ProjectDir)/../../src;$(ProjectDir)/../../external;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)/../../</OutDir>
+    <IncludePath>$(ProjectDir)/../../include;$(ProjectDir)/../../src;$(ProjectDir)/../../external;$(ProjectDir)/../../external/GLTools/include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)/../../external;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)/../../</OutDir>
-    <IncludePath>$(ProjectDir)/../../include;$(ProjectDir)/../../src;$(ProjectDir)/../../external;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/../../include;$(ProjectDir)/../../src;$(ProjectDir)/../../external;C:\Dev\opengl\Src\GLTools\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)/../../external;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -55,20 +55,23 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRTDBG_MAP_ALLOC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>Default</CompileAs>
       <ExceptionHandling>false</ExceptionHandling>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DisableSpecificWarnings>4530</DisableSpecificWarnings>
+      <AdditionalOptions>/DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
-      <AdditionalDependencies>kernel32.lib;user32.lib;opengl32.lib;glu32.lib;glew32s.lib;GLFW.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;opengl32.lib;glu32.lib;glew32s.lib;GLFW.lib;gltools.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalOptions>/ignore:4098 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/ignore:4098 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <Profile>false</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,11 +79,19 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <CompileAsManaged>false</CompileAsManaged>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <ExceptionHandling>false</ExceptionHandling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -88,24 +99,35 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
-      <AdditionalDependencies>kernel32.lib;user32.lib;opengl32.lib;glu32.lib;glew32s.lib;GLFW.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;opengl32.lib;glu32.lib;glew32s.lib;GLFW.lib;gltools.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4098 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\firefly\core\app.cpp" />
+    <ClCompile Include="..\..\include\firefly\core\helper\string.cpp" />
     <ClCompile Include="..\..\include\firefly\core\random.cpp" />
     <ClCompile Include="..\..\include\firefly\core\timer.cpp" />
     <ClCompile Include="..\..\include\firefly\core\window.cpp" />
     <ClCompile Include="..\..\include\firefly\debug\gl_debug.cpp" />
     <ClCompile Include="..\..\include\firefly\debug\log.cpp" />
+    <ClCompile Include="..\..\include\firefly\graphics\mesh.cpp" />
+    <ClCompile Include="..\..\include\firefly\graphics\primitive.cpp" />
     <ClCompile Include="..\..\include\firefly\graphics\shader.cpp" />
+    <ClCompile Include="..\..\include\firefly\graphics\texture.cpp" />
     <ClCompile Include="..\..\include\firefly\io\ini_file.cpp" />
+    <ClCompile Include="..\..\include\firefly\io\SOIL\image_DXT.c" />
+    <ClCompile Include="..\..\include\firefly\io\SOIL\image_helper.c" />
+    <ClCompile Include="..\..\include\firefly\io\SOIL\SOIL.c" />
+    <ClCompile Include="..\..\include\firefly\io\SOIL\stb_image_aug.c" />
     <ClCompile Include="..\..\src\demo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\firefly.hpp" />
     <ClInclude Include="..\..\include\firefly\common.hpp" />
     <ClInclude Include="..\..\include\firefly\core\app.hpp" />
+    <ClInclude Include="..\..\include\firefly\core\helper\string.hpp" />
     <ClInclude Include="..\..\include\firefly\core\input.hpp" />
     <ClInclude Include="..\..\include\firefly\core\random.hpp" />
     <ClInclude Include="..\..\include\firefly\core\singleton.hpp" />
@@ -114,12 +136,32 @@
     <ClInclude Include="..\..\include\firefly\core\window.hpp" />
     <ClInclude Include="..\..\include\firefly\debug\gl_debug.hpp" />
     <ClInclude Include="..\..\include\firefly\debug\log.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\frame.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\matrix.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\mesh.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\primitive.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\render.hpp" />
     <ClInclude Include="..\..\include\firefly\graphics\shader.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\texture.hpp" />
+    <ClInclude Include="..\..\include\firefly\graphics\transform.hpp" />
     <ClInclude Include="..\..\include\firefly\io\ini_file.hpp" />
+    <ClInclude Include="..\..\include\firefly\io\SOIL\image_DXT.h" />
+    <ClInclude Include="..\..\include\firefly\io\SOIL\image_helper.h" />
+    <ClInclude Include="..\..\include\firefly\io\SOIL\SOIL.h" />
+    <ClInclude Include="..\..\include\firefly\io\SOIL\stbi_DDS_aug.h" />
+    <ClInclude Include="..\..\include\firefly\io\SOIL\stbi_DDS_aug_c.h" />
+    <ClInclude Include="..\..\include\firefly\io\SOIL\stb_image_aug.h" />
     <ClInclude Include="..\..\include\firefly\opengl.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\data\shader\blur.frag" />
+    <None Include="..\..\data\shader\blur.vert" />
+    <None Include="..\..\data\shader\texPhong.frag" />
+    <None Include="..\..\data\shader\texPhong.vert" />
+    <None Include="..\..\data\shader\mirror.frag" />
+    <None Include="..\..\data\shader\mirror.vert" />
     <None Include="..\..\firefly.ini" />
+    <None Include="..\..\log" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

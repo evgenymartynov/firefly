@@ -28,7 +28,7 @@ namespace ff {
 			return value_ptr(m_MVP);
 		}
 
-		const float * GetNormalMatrix(bool normalize = false)
+		void GetNormalMatrix(mat3 & m, bool normalize = false) 
 		{
 			m_normalMatrix = glm::transpose( glm::inverse(m_modelView->mat3()) );
 			if (normalize) {
@@ -36,6 +36,12 @@ namespace ff {
 				m_normalMatrix[1] = glm::normalize(m_normalMatrix[1]);
 				m_normalMatrix[2] = glm::normalize(m_normalMatrix[2]);
 			}
+			m = m_normalMatrix;
+		}
+
+		const float * GetNormalMatrix(bool normalize = false)
+		{
+			GetNormalMatrix(m_normalMatrix, normalize);
 			return value_ptr(m_normalMatrix);
 		}
 

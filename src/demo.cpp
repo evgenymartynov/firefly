@@ -203,6 +203,7 @@ GLuint GetBlurFrame3(){ return (1 + ((curBlurFrame) % BLUR_TEXTURE_COUNT)); }
 		blurTimer = 0;
 		blurEnabled = true;
 		moveBlur = false;
+		cameraFrame.MoveForward(-10);
 		return true;
 	}
 
@@ -289,50 +290,82 @@ GLuint GetBlurFrame3(){ return (1 + ((curBlurFrame) % BLUR_TEXTURE_COUNT)); }
 		cameraFrame.GetCameraMatrix(camera);
 		mv.PushMatrix(camera);
 
-		// create point light
-		vec4 vLightPos(0, 0, 8, 0);
-		vec4 vLightEyePos = mv.Transform(vLightPos);
-		vec4 vAmbientColor(0.1f, 0.1f, 0.1f, 1);
-		vec4 vDiffuseColor(1, 1, 1, 1);
-		vec4 vSpecularColor(1, 1, 1, 1);
+			// create point light
+			vec4 vLightPos(sin(elapsed) * 10, 5, -8 + (cos(elapsed) * 15), 1);
+			vec4 vLightEyePos;
+			vec4 vAmbientColor(0.1f, 0.1f, 0.1f, 1);
+			vec4 vDiffuseColor(1, 1, 1, 1);
+			vec4 vSpecularColor(1, 1, 1, 1);
 
-		// use smoothstep to animate the cube movement
-		static float xPos;
-		xPos = ((float)sin(elapsed * 3.1) + 1.0f) / 2.0f;
-		xPos = (xPos) * (xPos) * (3.0f - 2.0f * (xPos));
-		xPos = (-1.5f * xPos) + (1.5f * (1.0f - xPos));
+			// use smoothstep to animate the cube movement
+			static float xPos;
+			xPos = ((float)sin(elapsed * 3.1) + 1.0f) / 2.0f;
+			xPos = (xPos) * (xPos) * (3.0f - 2.0f * (xPos));
+			xPos = (-1.5f * xPos) + (1.5f * (1.0f - xPos));
 
-		// copy uniform information to shader 
-		GL_DEBUG(glUseProgram(phongShader));
-		GL_DEBUG(glUniformMatrix3fv(locNM , 1, GL_FALSE, transform.GetNormalMatrix() ));
-		GL_DEBUG(glUniformMatrix4fv(locMV , 1, GL_FALSE, transform.GetModelView() ));
-		GL_DEBUG(glUniformMatrix4fv(locMVP, 1, GL_FALSE, transform.GetMVP() ));
-		GL_DEBUG(glUniform4fv(locAmbient, 1, &vAmbientColor[0]));
-		GL_DEBUG(glUniform4fv(locDiffuse, 1, &vDiffuseColor[0]));
-		GL_DEBUG(glUniform4fv(locSpecular, 1, &vSpecularColor[0]));
-		GL_DEBUG(glUniform3fv(locLightPos, 1, &vLightEyePos[0]));
-		GL_DEBUG(glUniform1i(locTexture, 0));
+			// copy uniform information to shader 
+			GL_DEBUG(glUseProgram(phongShader));
+			vLightEyePos = mv.Transform(vLightPos);
+			GL_DEBUG(glUniformMatrix3fv(locNM , 1, GL_FALSE, transform.GetNormalMatrix() ));
+			GL_DEBUG(glUniformMatrix4fv(locMV , 1, GL_FALSE, transform.GetModelView() ));
+			GL_DEBUG(glUniformMatrix4fv(locMVP, 1, GL_FALSE, transform.GetMVP() ));
+			GL_DEBUG(glUniform4fv(locAmbient, 1, &vAmbientColor[0]));
+			GL_DEBUG(glUniform4fv(locDiffuse, 1, &vDiffuseColor[0]));
+			GL_DEBUG(glUniform4fv(locSpecular, 1, &vSpecularColor[0]));
+			GL_DEBUG(glUniform3fv(locLightPos, 1, &vLightEyePos[0]));
+			GL_DEBUG(glUniform1i(locTexture, 0));
 
-		// render the floor
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, baseTexture);
-		base.Draw();
+			// render the floor
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, baseTexture);
+			base.Draw();
 
-		// transform modelview to rotate cube
-		mv.PushMatrix();
-		mat4 cubePos = translate(mat4(), vec3(xPos, -0.5f, -8.f));
-		cubePos = rotate(cubePos, 100.0f * (float)sin(elapsed), vec3(1.0f, 0.0f, 0.0f));
-		cubePos = rotate(cubePos, 20.0f * (float)elapsed, vec3(0.0f, 1.0f, 0.0f));
-		mv.MultMatrix(cubePos);
+			// transform modelview to rotate cube
+			mv.PushMatrix();
+				mat4 cubePos = translate(mat4(), vec3(xPos, -0.5f, -15.f));
+				cubePos = rotate(cubePos, 100.0f * (float)sin(elapsed), vec3(1.0f, 0.0f, 0.0f));
+				cubePos = rotate(cubePos, 20.0f * (float)elapsed, vec3(0.0f, 1.0f, 0.0f));
+				mv.MultMatrix(cubePos);
 
-		// copy uniform information to shader for cube
-		GL_DEBUG(glUniformMatrix3fv(locNM , 1, GL_FALSE, transform.GetNormalMatrix() ));
-		GL_DEBUG(glUniformMatrix4fv(locMV , 1, GL_FALSE, transform.GetModelView() ));
-		GL_DEBUG(glUniformMatrix4fv(locMVP, 1, GL_FALSE, transform.GetMVP() ));
-		glBindTexture(GL_TEXTURE_2D, cubeTexture);
+				// copy uniform information to shader for cube
+				vLightEyePos = mv.Transform(vLightPos);
+				GL_DEBUG(glUniform3fv(locLightPos, 1, &vLightEyePos[0]));
+				GL_DEBUG(glUniformMatrix3fv(locNM , 1, GL_FALSE, transform.GetNormalMatrix() ));
+				GL_DEBUG(glUniformMatrix4fv(locMV , 1, GL_FALSE, transform.GetModelView() ));
+				GL_DEBUG(glUniformMatrix4fv(locMVP, 1, GL_FALSE, transform.GetMVP() ));
+				glBindTexture(GL_TEXTURE_2D, cubeTexture);
 
-		// render geometry
-		cube.Draw();
+				// render geometry
+				cube.Draw();
+			mv.PopMatrix();
+
+			// draw cube at light position
+			mv.PushMatrix();
+				cubePos = translate(mat4(), vLightPos.xyz());
+				mv.MultMatrix(cubePos);
+				vLightEyePos = mv.Transform(vLightPos);
+				GL_DEBUG(glUniform3fv(locLightPos, 1, &vLightEyePos[0]));
+				GL_DEBUG(glUniformMatrix3fv(locNM , 1, GL_FALSE, transform.GetNormalMatrix() ));
+				GL_DEBUG(glUniformMatrix4fv(locMV , 1, GL_FALSE, transform.GetModelView() ));
+				GL_DEBUG(glUniformMatrix4fv(locMVP, 1, GL_FALSE, transform.GetMVP() ));
+				glBindTexture(GL_TEXTURE_2D, cubeTexture);
+				cube.Draw();
+			mv.PopMatrix();
+
+			// draw a stationary cube
+			mv.PushMatrix();
+				cubePos = translate(mat4(), vec3(-5, 0, 0));
+				cubePos = rotate(cubePos, 45.0f, vec3(1, 0, 0));
+				mv.MultMatrix(cubePos);
+				vLightEyePos = mv.Transform(vLightPos);
+				GL_DEBUG(glUniform3fv(locLightPos, 1, &vLightEyePos[0]));
+				GL_DEBUG(glUniformMatrix3fv(locNM , 1, GL_FALSE, transform.GetNormalMatrix() ));
+				GL_DEBUG(glUniformMatrix4fv(locMV , 1, GL_FALSE, transform.GetModelView() ));
+				GL_DEBUG(glUniformMatrix4fv(locMVP, 1, GL_FALSE, transform.GetMVP() ));
+				glBindTexture(GL_TEXTURE_2D, cubeTexture);
+				cube.Draw();
+			mv.PopMatrix();
+
 		mv.PopMatrix();
 
 		// update blur frame textures

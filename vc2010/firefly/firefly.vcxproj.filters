@@ -25,6 +25,15 @@
     <Filter Include="config">
       <UniqueIdentifier>{f6eb0e8d-7230-4475-a3e6-c5ee106e914a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\firefly\core\helper">
+      <UniqueIdentifier>{efbba020-2d60-4240-a399-6ce4cfe73fc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly\io\SOIL">
+      <UniqueIdentifier>{ecd10c7d-deb4-4941-b86d-f0ba88bb5a2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\firefly\graphics\helper">
+      <UniqueIdentifier>{526de6ad-78ae-45fb-8063-848bd170e83c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\demo.cpp">
@@ -53,6 +62,30 @@
     </ClCompile>
     <ClCompile Include="..\..\include\firefly\io\ini_file.cpp">
       <Filter>include\firefly\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\graphics\texture.cpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\core\helper\string.cpp">
+      <Filter>include\firefly\core\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\io\SOIL\image_DXT.c">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\io\SOIL\image_helper.c">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\io\SOIL\SOIL.c">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\io\SOIL\stb_image_aug.c">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\graphics\primitive.cpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\firefly\graphics\mesh.cpp">
+      <Filter>include\firefly\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,9 +131,72 @@
     <ClInclude Include="..\..\include\firefly\io\ini_file.hpp">
       <Filter>include\firefly\io</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\texture.hpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\core\helper\string.hpp">
+      <Filter>include\firefly\core\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\SOIL\image_DXT.h">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\SOIL\image_helper.h">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\SOIL\SOIL.h">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\SOIL\stb_image_aug.h">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\SOIL\stbi_DDS_aug.h">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\io\SOIL\stbi_DDS_aug_c.h">
+      <Filter>include\firefly\io\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\primitive.hpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\matrix.hpp">
+      <Filter>include\firefly\graphics\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\transform.hpp">
+      <Filter>include\firefly\graphics\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\mesh.hpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\frame.hpp">
+      <Filter>include\firefly\graphics\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\firefly\graphics\render.hpp">
+      <Filter>include\firefly\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\firefly.ini">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\log">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\data\shader\blur.frag">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\data\shader\blur.vert">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\data\shader\mirror.frag">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\data\shader\mirror.vert">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\data\shader\texPhong.frag">
+      <Filter>config</Filter>
+    </None>
+    <None Include="..\..\data\shader\texPhong.vert">
       <Filter>config</Filter>
     </None>
   </ItemGroup>
