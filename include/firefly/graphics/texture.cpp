@@ -49,6 +49,9 @@ namespace ff {
 		GL_DEBUG(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 		GL_DEBUG(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, afLevel));
 
+		g_Log.write(LOG_LOAD, "Texture loaded > [%d] '%s'%s%s",	handle, file.c_str(), 
+			                       repeats ? " [wrap] " : "", compress ? " [compress]" : "");
+
 		// store handle
 		m_textures.push_back(handle);
 		return handle;
