@@ -5,7 +5,6 @@
 *.log
 *.sdf
 *.obj
-*.exe
 *.vp
 *.fp
 *.vs
