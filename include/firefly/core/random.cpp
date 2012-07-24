@@ -15,7 +15,7 @@ namespace ff {
 		if (seed) {
 			g_seed = seed;
 		} else {
-			g_seed = unsigned int (time(NULL));
+			g_seed = (unsigned int)(time(NULL));
 		}
         srand(g_seed);
     }

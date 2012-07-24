@@ -5,7 +5,7 @@ MODULES := core debug io graphics
 SRC_DIR   := src include $(addprefix include/firefly/,$(MODULES))
 BUILD     := src include $(addprefix include/firefly/,$(MODULES))
 BUILD_DIR := $(addprefix build/,$(BUILD))
-INC       := $(addprefix -I,$(SRC_DIR)) -Iexternal
+INC       := $(addprefix -I,$(SRC_DIR)) -Iexternal -Iexternal/GLTools/include
 LIB       := -Lexternal
 SRC       := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
 OBJ       := $(SRC:%.cpp=build/%.o)
@@ -15,7 +15,7 @@ vpath %.cpp $(SRC_DIR)
 CC         := g++ -g
 PROJECT    := -fno-exceptions -pthread
 STATIC_LIB := external/libglfw.a external/libGLEW.a
-CFLAGS     := $(PROJECT) $(INC) -Wall -Werror -O -std=c++0x
+CFLAGS     := $(PROJECT) $(INC) -Wall -Werror -O -std=c++0x -msse2
 LDFLAGS-S  := $(PROJECT) $(LIB) -lGL
 LDFLAGS    := $(LDFLAGS-S) -lGLEW -lglfw
 EXECUTABLE := demo

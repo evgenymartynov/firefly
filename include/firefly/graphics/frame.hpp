@@ -13,8 +13,8 @@ namespace ff {
 	{
 	public:
 		Frame() : m_origin(0.0f, 0.0f, 0.0f), 
-				  m_up(0.0f, 1.0f, 0.0f),
-				  m_forward(0.0f, 0.0f, -1.0f) {}
+				  m_forward(0.0f, 0.0f, -1.0f),
+				  m_up(0.0f, 1.0f, 0.0f) {}
 		~Frame() {}
 
 		// setter / getter functions

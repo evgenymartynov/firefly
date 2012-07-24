@@ -13,7 +13,7 @@
 
 // firefly opengl type defines
 
-typedef enum FF_SHADER_ATTRIBUTE {
+enum FF_SHADER_ATTRIBUTE {
 	FF_ATTRIBUTE_VERTEX = 0,
 	FF_ATTRIBUTE_COLOR,
 	FF_ATTRIBUTE_NORMAL,

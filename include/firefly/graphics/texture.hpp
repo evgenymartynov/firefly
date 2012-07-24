@@ -8,7 +8,7 @@
 #define FF_TEXTURE_PATH "data/texture/"
 #define FF_MAX_ANISOTROPY 16
 
-typedef enum FF_TEXTURE_TYPE {
+enum FF_TEXTURE_TYPE {
 	FF_TEXTURE_TGA,
 	FF_TEXTURE_JPG,
 	FF_TEXTURE_PNG,

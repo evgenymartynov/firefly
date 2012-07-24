@@ -69,7 +69,7 @@ namespace ff {
 		inline const float * ptr(void);
 		inline void GetMatrix(mat4 & m);
 
-		inline const mat3 mat3(void);
+		inline const glm::mat3 mat3(void);
 
 		operator mat_t () { return m_stack.top(); }
 		mat_t operator * (MatrixStack & other) { return m_stack.top() * other.top(); }
